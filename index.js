@@ -52,14 +52,25 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end()
 })
 
-app.post("api/persons", (request, response) => {
+app.post("/api/persons", (request, response) => {
   const body = request.body
 
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: "required content missing"
+    })
+  }
+  persons.map(p => {
+    if (p.name.toLowerCase() === body.name.toLowerCase()){
+      return response.status(400).json({
+        error: "contact with that name already exists"
+      })
+    }
+  })
 
-  
   const person = {
     "name": body.name,
-    "number": body.content,
+    "number": body.number,
     "id": Math.round(Math.random()*1000)
   }
 
