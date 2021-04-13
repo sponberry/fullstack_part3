@@ -59,11 +59,12 @@ app.get("/info", (request, response) => {
     <p>${requestDate.toString()}</p>`)
 })
 
-// ! This will need to be modified for MongoDB later
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(p => p.id !== id)
-  response.status(204).end()
+  Note.findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.post("/api/persons", (request, response) => {
@@ -95,7 +96,6 @@ app.post("/api/persons", (request, response) => {
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error:"unrecognised url endpoint" })
 }
-
 app.use(unknownEndpoint)
 
 const PORT = process.env.PORT
