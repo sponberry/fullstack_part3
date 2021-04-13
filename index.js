@@ -22,8 +22,16 @@ const errorHandler = (error, request, response, next) => {
 
 app.get("/api/persons", (request, response) => {
   Person.find({}).then(persons => {
-    const people = persons
     response.json(persons)
+})
+})
+
+app.get("/info", (request, response) => {
+  Person.find({}).then(persons => {
+    const people = persons
+    const requestDate = new Date()
+    response.send(`<p>Phonebook has info for ${people.length} people</p>
+      <p>${requestDate.toString()}</p>`)
   })
 })
 
@@ -33,12 +41,6 @@ app.get("/api/persons/:id", (request, response, next) => {
       response.json(persons)
     })
     .catch(error => next(error))
-})
-
-app.get("/info", (request, response) => {
-  const requestDate = new Date()
-  response.send(`<p>Phonebook has info for ${people.length} people</p>
-    <p>${requestDate.toString()}</p>`)
 })
 
 app.delete("/api/persons/:id", (request, response, next) => {
