@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 if (process.argv.length < 3) {
-  console.log('Please provide the password as an argument: node mongo.js <password>')
+  console.log("Please provide the password as an argument: node mongo.js <password>")
   process.exit(1)
 }
 
@@ -33,7 +33,7 @@ if (process.argv.length === 3) {
     name: process.argv[3],
     number: process.argv[4],
   })
-  
+
   person.save().then(result => {
     console.log("contact saved:", result)
     mongoose.connection.close()

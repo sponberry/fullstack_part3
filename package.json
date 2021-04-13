@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../fullstack_an/part2/phonebook && npm run build --prod && cp -r build ../../fullstack_part3",
     "deploy": "git push heroku main",
     "deploy:full": "npm runbuild:ui && git add . && git commit -m uibuild && git",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   },
   "homepage": "https://github.com/sponberry/fullstack_part3#readme",
   "devDependencies": {
+    "eslint": "^7.24.0",
     "nodemon": "^2.0.7"
   },
   "dependencies": {

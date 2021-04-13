@@ -7,15 +7,16 @@ const Person = require("./models/person")
 app.use(express.static("build"))
 app.use(express.json())
 
+// eslint-disable-next-line
 morgan.token("content", function (req, res) { return JSON.stringify(req.body) })
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms :content"))
 
 const errorHandler = (error, request, response, next) => {
   console.log(error.message)
 
   if (error.name === "CastError") {
     response.status(400).send({ error:"bad id format" })
-  } else if (error.name =="ValidationError") {
+  } else if (error.name === "ValidationError") {
     response.status(400).json({ error: error.message })
   }
 
@@ -25,7 +26,7 @@ const errorHandler = (error, request, response, next) => {
 app.get("/api/persons", (request, response) => {
   Person.find({}).then(persons => {
     response.json(persons)
-})
+  })
 })
 
 app.get("/info", (request, response) => {
@@ -47,6 +48,7 @@ app.get("/api/persons/:id", (request, response, next) => {
 
 app.delete("/api/persons/:id", (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
+  // eslint-disable-next-line
     .then(result => {
       response.status(204).end()
     })
@@ -60,7 +62,7 @@ app.post("/api/persons", (request, response, next) => {
     name: body.name,
     number: body.number
   })
-  
+
   person.save()
     .then(savedContact => {
       response.json(savedContact)
@@ -73,7 +75,7 @@ app.put("/api/persons/:id", (request, response, next) => {
     name: request.body.name,
     number: request.body.number
   }
-  Person.findByIdAndUpdate(request.params.id, contact, { new: true, runValidators: true, context: 'query' })
+  Person.findByIdAndUpdate(request.params.id, contact, { new: true, runValidators: true, context: "query" })
     .then(updatedContact => {
       response.json(updatedContact)
     })
