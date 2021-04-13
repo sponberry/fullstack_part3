@@ -39,7 +39,7 @@ app.get("/info", (request, response) => {
 })
 
 app.delete("/api/persons/:id", (request, response, next) => {
-  Note.findByIdAndRemove(request.params.id)
+  Person.findByIdAndRemove(request.params.id)
     .then(result => {
       response.status(204).end()
     })
@@ -54,13 +54,6 @@ app.post("/api/persons", (request, response) => {
       error: "required content missing"
     })
   }
-  // people.map(p => {
-  //   if (p.name.toLowerCase() === body.name.toLowerCase()){
-  //     return response.status(400).json({
-  //       error: "contact with that name already exists"
-  //     })
-  //   }
-  // })
 
   const person = new Person({
     name: body.name,
