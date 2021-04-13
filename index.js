@@ -10,28 +10,7 @@ app.use(express.json())
 morgan.token("content", function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
-// let persons = [
-//   {
-//     "name": "Ada Lovelace",
-//     "number": "39-44-5323523",
-//     "id": 2
-//   },
-//   {
-//     "name": "Dan Abramov",
-//     "number": "12-43-234345",
-//     "id": 3
-//   },
-//   {
-//     "name": "Mary Poppendieck",
-//     "number": "39-23-6423122",
-//     "id": 4
-//   },
-//   {
-//     "name": "Wonderwoman",
-//     "number": "38492331",
-//     "id": 8
-//   }
-// ]
+
 
 app.get("/api/persons", (request, response) => {
   Person.find({}).then(persons => {
@@ -59,7 +38,7 @@ app.get("/info", (request, response) => {
     <p>${requestDate.toString()}</p>`)
 })
 
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   Note.findByIdAndRemove(request.params.id)
     .then(result => {
       response.status(204).end()
@@ -91,6 +70,18 @@ app.post("/api/persons", (request, response) => {
   person.save().then(savedContact => {
     response.json(savedContact)
   })
+})
+
+app.put("/api/persons/:id", (request, response, next) => {
+  const contact = {
+    name: request.body.name,
+    number: request.body.number
+  }
+  Person.findByIdAndUpdate(request.params.id, contact, { new: true })
+    .then(updatedContact => {
+      response.json(updatedContact)
+    })
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
