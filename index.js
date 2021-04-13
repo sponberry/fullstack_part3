@@ -10,7 +10,15 @@ app.use(express.json())
 morgan.token("content", function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message)
 
+  if (error.name === "CastError") {
+    response.status(400).send({ error:"bad id format" })
+  }
+
+  next(error)
+}
 
 app.get("/api/persons", (request, response) => {
   Person.find({}).then(persons => {
@@ -19,17 +27,12 @@ app.get("/api/persons", (request, response) => {
   })
 })
 
-app.get("/api/persons/:id", (request, response) => {
-  Person.findById(request.params.id).then(persons => {
-    response.json(persons)
-  })
-  // const id = Number(request.params.id)
-  // const person = persons.find(p => p.id === id)
-  // if (person) {
-  //   response.json(person)
-  // } else {
-  //   response.status(404).end()
-  // }
+app.get("/api/persons/:id", (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(persons => {
+      response.json(persons)
+    })
+    .catch(error => next(error))
 })
 
 app.get("/info", (request, response) => {
@@ -81,6 +84,7 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error:"unrecognised url endpoint" })
 }
 app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
